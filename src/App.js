@@ -11,7 +11,7 @@ import MovieSkeleton from "./skeletons/Movie";
 import Header from "./components/Header";
 
 const LoginComponent = lazy(() => import("./pages/Login"));
-const SignupComponent = lazy(() => import("./pages/Signup"));
+const SignupComponent = lazy(() => import("./pages/SignUp"));
 const HomeComponent = lazy(() => import("./pages/Home"));
 const MovieComponent = lazy(() => import("./pages/Movie"));
 const ProfileComponent = lazy(() => import("./pages/Profile"));
