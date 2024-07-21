@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MainMovie from "../components/MainMovie";
-
-import MovieList from "../components/MovieList";
 
 import {
   getNowPlayingMovies,
@@ -13,8 +11,11 @@ import {
   getUpcomingMovies,
 } from "../store/actions/movieAction";
 
-import Loading from "../components/Loading";
 import { getWatchListMovies } from "../store/actions/watchListAction";
+import MovieList from "../skeletons/MovieList";
+import HomeSkeleton from "../skeletons/Home";
+
+const MovieListComponent = lazy(() => import("../components/MovieList"));
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -35,9 +36,9 @@ const Home = () => {
   }, [user, dispatch]);
 
   if (!nowPlayingMovies || !popularMovies || !topRatedMovies || !upcoming)
-    return <Loading />;
+    return <HomeSkeleton />;
 
-  if (user && !watchList) return <Loading />;
+  if (user && !watchList) return <HomeSkeleton />;
 
   const movieLists = [
     { title: "Now Playing", movies: nowPlayingMovies },
@@ -48,10 +49,13 @@ const Home = () => {
 
   return (
     <div className=" bg-black">
+      {console.log("Home Lazy Load")}
       <MainMovie movie={nowPlayingMovies[0]} />
-      {movieLists.map(({ title, movies }) => (
-        <MovieList key={title} title={title} movies={movies} />
-      ))}
+      <Suspense fallback={<MovieList />}>
+        {movieLists.map(({ title, movies }) => (
+          <MovieListComponent key={title} title={title} movies={movies} />
+        ))}
+      </Suspense>
     </div>
   );
 };

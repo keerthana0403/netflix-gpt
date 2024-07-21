@@ -1,16 +1,30 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import MovieCard from "./MovieCard";
-import { Link } from "react-router-dom";
-import Loading from "./Loading";
+import { Link, useNavigate } from "react-router-dom";
+
+import GptMovies from "../skeletons/GptMovies";
+import { removeData } from "../store/reducers/gptSearchSlice";
 
 const GptMovieSuggestions = () => {
   const truncate = (str, len) => {
     if (str.length < len) return str;
     return str.slice(0, len) + "...";
   };
-  const { movies, message } = useSelector((store) => store.gptSearch);
-  if (!movies) return <Loading />;
+
+  const dispatch = useDispatch();
+
+  const { movies, message, isLoading } = useSelector(
+    (store) => store.gptSearch
+  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => dispatch(removeData());
+  }, [navigate, dispatch]);
+
+  if (!movies || isLoading) return <GptMovies />;
+
   return (
     <div className=" w-full max-w-3xl mx-auto ">
       {movies.length ? (

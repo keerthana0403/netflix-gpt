@@ -1,16 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { BG_IMG } from "../utils/constants";
-
-import Loading from "../components/Loading";
+import HomeSkeleton from "../skeletons/Home";
 import MovieList from "../components/MovieList";
 
 const Profile = () => {
   const watchList = useSelector((store) => store.watchList.movies);
   const user = useSelector((store) => store.auth.user);
 
-  if (!user || !watchList) return <Loading />;
+  if (!user || !watchList) return <HomeSkeleton />;
 
   const extractDate = (dateString) => {
     const date = new Date(dateString);
@@ -20,13 +18,13 @@ const Profile = () => {
 
   return (
     <>
-      <div className="bg-black h-screen w-full select-none text-white ">
-        <div className="w-full h-[350px] md:h-[350px] select-none border-b border-slate-500">
-          <div className="w-full h-full ">
+      <div className="bg-black h-screen w-full select-none text-white">
+        <div className="w-full h-[350px] md:h-[350px] select-none ">
+          <div className="w-full h-full">
             <div className="absolute w-full h-[350px] md:h-[350px] bg-black/70 bg-gradient-to-t from-black" />
             <img
               className="w-full h-full object-cover object-top "
-              src={BG_IMG}
+              src="backgroundImage.jpg"
               alt={"///"}
             />
             <div className="absolute w-full  top-[10%] md:top-[10%] lg:top-[20%] mt-5 p-4 md:p-8 text-white flex m-5">

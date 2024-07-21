@@ -1,60 +1,35 @@
 import React, { useRef, useState } from "react";
-import { BG_IMG } from "../utils/constants";
-import { Link, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { auth } from "../services/firebase";
-import { addUser } from "../store/reducers/userSlice";
+
+import { Link } from "react-router-dom";
+
 import { checkValidData } from "../utils/validate";
 import Loading from "../components/Loading";
+import useLogin from "../hooks/useLogin";
 
 const Login = () => {
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const email = useRef("");
   const password = useRef("");
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { login, loading } = useLogin();
 
   const handleAuth = async () => {
+    setError("");
     const message = checkValidData(email.current.value, password.current.value);
     if (message) {
       setError(message);
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email.current.value,
-        password.current.value
-      );
-      const { uid, email: userEmail, metadata } = userCredential.user;
-      dispatch(
-        addUser({
-          uid: uid,
-          email: userEmail,
-          creationTime: metadata?.creationTime,
-        })
-      );
-      navigate("/");
-    } catch (error) {
-      const errorMessage = error.message;
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
+    login(email.current.value, password.current.value);
   };
   return (
     <>
       <div className="w-full h-screen select-none">
         <img
           className="sm:block absolute w-full h-full object-cover"
-          src={BG_IMG}
+          src="backgroundImage.jpg"
           alt="///"
         />
         <div className="bg-black/70 fixed top-0 left-0 w-full h-screen" />

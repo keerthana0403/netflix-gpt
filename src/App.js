@@ -1,27 +1,80 @@
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 import appStore from "./store/appStore";
-import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/SignUp";
+
+import HomeSkeleton from "./skeletons/Home";
+import MovieSkeleton from "./skeletons/Movie";
+
 import Header from "./components/Header";
-import Movie from "./pages/Movie";
-import Profile from "./pages/Profile";
-import GptSearch from "./pages/GptSearch";
+
+const LoginComponent = lazy(() => import("./pages/Login"));
+const SignupComponent = lazy(() => import("./pages/Signup"));
+const HomeComponent = lazy(() => import("./pages/Home"));
+const MovieComponent = lazy(() => import("./pages/Movie"));
+const ProfileComponent = lazy(() => import("./pages/Profile"));
+const GptSearchComponent = lazy(() => import("./pages/GptSearch"));
 
 function App() {
   return (
     <Provider store={appStore}>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/movie/:id" element={<Movie />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/search" element={<GptSearch />} />
-      </Routes>
+      <Router>
+        <Header />
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<HomeSkeleton />}>
+                <HomeComponent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <Suspense fallback={<MovieSkeleton />}>
+                <LoginComponent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <Suspense fallback={<MovieSkeleton />}>
+                <SignupComponent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/movie/:id"
+            element={
+              <Suspense fallback={<MovieSkeleton />}>
+                <MovieComponent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Suspense fallback={<HomeSkeleton />}>
+                <ProfileComponent />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <Suspense fallback={<HomeSkeleton />}>
+                <GptSearchComponent />
+              </Suspense>
+            }
+          />
+        </Routes>
+      </Router>
+      <Toaster />
     </Provider>
   );
 }

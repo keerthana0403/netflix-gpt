@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import { auth } from "../services/firebase";
 import { addUser, removeUser } from "../store/reducers/userSlice";
-
-import { Link } from "react-router-dom";
 import { removeData } from "../store/reducers/gptSearchSlice";
 import { removeWatchList } from "../store/reducers/watchlistSlice";
 import Loading from "./Loading";
@@ -25,7 +26,7 @@ const Header = () => {
         setLoading(false);
       })
       .catch((error) => {
-        navigate("/error");
+        toast.error(error.message);
       });
   };
 
@@ -40,24 +41,20 @@ const Header = () => {
             creationTime: metadata?.creationTime,
           })
         );
-        navigate("/");
       } else {
         dispatch(removeUser());
         dispatch(removeData());
         dispatch(removeWatchList());
-        navigate("/");
       }
     });
     return () => unSubscribe();
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   return (
     <div className="absolute w-full p-4 flex items-center justify-between  bg-gradient-to-b  from-black z-10 select-none">
       <Link to="/">
-        <div className=" cursor-pointer ">
-          <h1 className="text-red-500 text-3xl lg:text-5xl font-bold">
-            NETFLIX
-          </h1>
+        <div className=" cursor-pointer">
+          <h1 className="text-red-500 text-3xl font-bold">NETFLIX</h1>
         </div>
       </Link>
 

@@ -1,25 +1,22 @@
 import React, { useRef, useState } from "react";
-import { BG_IMG } from "../utils/constants";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
+import { Link } from "react-router-dom";
+
 import { checkValidData } from "../utils/validate";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../services/firebase";
-import { addUser } from "../store/reducers/userSlice";
+
 import Loading from "../components/Loading";
+import useSignup from "../hooks/useSignup";
 
 const Signup = () => {
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const email = useRef("");
   const password = useRef("");
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { loading, signup } = useSignup();
 
   const handleAuth = async () => {
+    setError("");
     const message = checkValidData(email.current.value, password.current.value);
 
     if (message) {
@@ -27,36 +24,7 @@ const Signup = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email.current.value,
-        password.current.value
-      );
-
-      const { uid, email: userEmail, metadata } = userCredential.user;
-      dispatch(
-        addUser({
-          uid: uid,
-          email: userEmail,
-          creationTime: metadata?.creationTime,
-        })
-      );
-
-      await setDoc(doc(db, "users", uid), {
-        uid: uid,
-        email: userEmail,
-        favShows: [],
-      });
-
-      navigate("/");
-    } catch (error) {
-      const errorMessage = error.message;
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
+    signup(email.current.value, password.current.value);
   };
 
   return (
@@ -64,7 +32,7 @@ const Signup = () => {
       <div className="w-full h-screen select-none">
         <img
           className="sm:block absolute w-full h-full object-cover"
-          src={BG_IMG}
+          src="backgroundImage.jpg"
           alt="///"
         />
         <div className="bg-black/70 fixed top-0 left-0 w-full h-screen " />

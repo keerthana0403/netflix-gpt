@@ -4,6 +4,7 @@ import { IoMdAdd } from "react-icons/io";
 import { TiTick } from "react-icons/ti";
 import useMovieDetails from "../hooks/useMovieDetails";
 import { movieImage } from "../utils/constants";
+import MovieSkeleton from "../skeletons/Movie";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,7 +12,8 @@ import {
   addMovieToWatchlist,
   removeMovieFromWatchlist,
 } from "../store/actions/watchListAction";
-import Loading from "../components/Loading";
+
+import toast from "react-hot-toast";
 
 const Movie = () => {
   const user = useSelector((store) => store.auth.user);
@@ -35,13 +37,13 @@ const Movie = () => {
     });
   }, [watchList, id]);
 
-  if (!movie) return <Loading />;
-
   if (!user) {
-    alert("Sign In to continue");
+    toast.error("Sign In to continue");
     navigate("/");
     return;
   }
+
+  if (!movie || !watchList) return <MovieSkeleton />;
 
   const markFavShow = () => {
     const userId = user?.uid;
@@ -57,6 +59,7 @@ const Movie = () => {
 
   return (
     <div className="w-full h-screen bg-black">
+      {console.log("Movie Lazy Load")}
       <img
         className="hidden sm:block absolute w-full h-screen object-cover"
         src={movieImage(movie.backdrop_path ?? movie.poster_path, "original")}

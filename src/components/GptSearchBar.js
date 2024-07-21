@@ -1,63 +1,20 @@
-import React, { useRef, useState } from "react";
-import { getGptResult } from "../store/actions/gptSearchAction";
+import React, { useRef } from "react";
 
-import { useDispatch } from "react-redux";
-import { addMessage } from "../store/reducers/gptSearchSlice";
 import Loading from "./Loading";
+import useGptSearch from "../hooks/useGptSearch";
+import toast from "react-hot-toast";
 
 const GptSearchBar = () => {
   const searchText = useRef(null);
-  const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
+  const { loading, gptSearch } = useGptSearch();
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    const text = searchText.current.value;
-    const apiUrl = "https://api.openai.com/v1/chat/completions";
-    const apiKey = process.env.REACT_APP_OPENAI_APIKEY;
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    };
-    const data = {
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "user",
-          content: `The user has entered: "${text}"
-                    Please provide a list movies. Respond with only the names of the movies in an array format and the list should not have more than 5 movies. Do not include any additional text or explanations.
-                    If the input is unclear or unrelated to movies, respond with: "I'm sorry, I couldn't find any relevant movies based on your input. Please try searching with different keywords or phrases related to movies."
-                    Examples:
-                    Input: "top-rated Tamil movies"
-                    Output: ["Movie1", "Movie2", "Movie3"]`,
-        },
-      ],
-    };
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
-      const summary = result;
-      const output = summary?.choices[0].message.content.trim();
-      console.log(output);
-      if (output.startsWith("[") && output.endsWith("]")) {
-        const movieList = JSON.parse(output);
-        console.log(movieList);
-        dispatch(getGptResult(movieList));
-      } else {
-        dispatch(addMessage(output));
-        console.log("No relevant movies found.");
-      }
-    } catch (error) {
-      console.error("Error fetching movies:", error);
-      dispatch(addMessage("There was an error processing your request."));
-    } finally {
-      setLoading(false);
+  const handleSubmit = () => {
+    if (!searchText.current.value) {
+      toast.error("Please enter a valid Input");
+      return;
     }
+    gptSearch(searchText.current.value);
   };
 
   return (
@@ -72,6 +29,7 @@ const GptSearchBar = () => {
           ref={searchText}
           className="flex-grow p-2 rounded-l-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
+
         <button
           onClick={handleSubmit}
           disabled={loading}
