@@ -30,16 +30,19 @@ const GptMovieSuggestions = () => {
       {movies.length ? (
         <div className="m-4  text-white  flex flex-col justify-center ">
           {movies.map((movie) => (
-            <div className="m-2  bg-white flex items-center rounded-lg cursor-pointer">
+            <div
+              key={movie.id}
+              className="m-2  bg-black flex items-center rounded-lg  border border-gray-900 shadow shadow-gray-500"
+            >
               <Link key={movie.id} to={"/movie/" + movie.id}>
-                <MovieCard movie={movie} />
+                <MovieCard key={movie.id} movie={movie} />
               </Link>
-              <div className="text-black ">
+              <div className="text-gray-100 ">
                 <h1 className="font-bold">
                   {movie.title || movie.original_title}
                 </h1>
 
-                <p className="text-gray-700">{movie.release_date}</p>
+                <p className="text-gray-500">{movie.release_date}</p>
                 <p className="w-full hidden md:block   text-gray-500">
                   {truncate(movie.overview, 100)}
                 </p>
