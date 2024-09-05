@@ -23,11 +23,19 @@ const useGptSearch = () => {
         {
           role: "user",
           content: `The user has entered: "${searchText}"
-                    Please provide a list movies. Respond with only the names of the movies in an array format and the list should not have more than 5 movies. Do not include any additional text or explanations.
-                    If the input is unclear or unrelated to movies, respond with: "I'm sorry, I couldn't find any relevant movies based on your input. Please try searching with different keywords or phrases related to movies."
-                    Examples:
-                    Input: "top-rated Korean movies"
-                    Output: ["Movie1", "Movie2", "Movie3"]`,
+                Please provide a list of movies/tv shows based on the input. The response should be in the following format: 
+                [
+                  { "type": "movie", "name": "Movie1" },
+                  { "type": "tv", "name": "TV Show1" }
+                ]
+                Provide no more than 5 items in total. Do not include any additional text or explanations.
+                If the input is unclear or unrelated to movies or TV shows, respond with: "I'm sorry, I couldn't find any relevant titles based on your input. Please try searching with different keywords or phrases related to movies or TV shows."
+                Examples:
+                Input: "top-rated Korean content"
+                Output: [
+                  { "type": "movie", "name": "Movie1" },
+                  { "type": "tv", "name": "TV Show1" }
+                ]`,
         },
       ],
     };
@@ -43,7 +51,6 @@ const useGptSearch = () => {
       console.log(output);
       if (output.startsWith("[") && output.endsWith("]")) {
         const movieList = JSON.parse(output);
-        console.log(movieList);
         dispatch(getGptResult(movieList));
       } else {
         dispatch(addMessage(output));

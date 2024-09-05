@@ -4,6 +4,7 @@ import {
   getPopularMovies,
   getTopRatedMovies,
   getUpcomingMovies,
+  getTrendingMovies,
 } from "../actions/movieAction";
 
 const moviesSlice = createSlice({
@@ -13,6 +14,7 @@ const moviesSlice = createSlice({
     popularMovies: null,
     topRatedMovies: null,
     upcoming: null,
+    trending: null,
     isLoading: null,
     isError: false,
   },
@@ -73,6 +75,18 @@ const moviesSlice = createSlice({
     });
 
     //
+
+    builder.addCase(getTrendingMovies.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getTrendingMovies.fulfilled, (state, action) => {
+      state.trending = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getTrendingMovies.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+    });
   },
 });
 

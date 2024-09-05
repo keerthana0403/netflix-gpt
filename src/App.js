@@ -1,14 +1,20 @@
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Provider } from "react-redux";
+import React, { Suspense, lazy, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 
-import appStore from "./store/appStore";
-
-import HomeSkeleton from "./skeletons/Home";
-import MovieSkeleton from "./skeletons/Movie";
-
-import Header from "./components/Header";
+import NotFoundPage from "./pages/404";
+import Loading from "./components/Loading";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./services/firebase";
+import { addUser, removeUser } from "./store/reducers/userSlice";
+import { removeData } from "./store/reducers/gptSearchSlice";
+import { removeWatchList } from "./store/reducers/watchlistSlice";
 
 const LoginComponent = lazy(() => import("./pages/Login"));
 const SignupComponent = lazy(() => import("./pages/SignUp"));
@@ -18,64 +24,110 @@ const ProfileComponent = lazy(() => import("./pages/Profile"));
 const GptSearchComponent = lazy(() => import("./pages/GptSearch"));
 
 function App() {
-  return (
-    <Provider store={appStore}>
-      <Router>
-        <Header />
+  const user = useSelector((store) => store.auth.user);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    const authState = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, metadata } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            creationTime: metadata?.creationTime,
+          })
+        );
+      } else {
+        dispatch(removeUser());
+        dispatch(removeData());
+        dispatch(removeWatchList());
+      }
+    });
+    return () => authState();
+  }, [dispatch]);
+
+  return (
+    <>
+      <Router>
         <Routes>
           <Route
             path="/"
             element={
-              <Suspense fallback={<HomeSkeleton />}>
-                <HomeComponent />
-              </Suspense>
+              user ? (
+                <Suspense fallback={<Loading />}>
+                  <HomeComponent />
+                </Suspense>
+              ) : (
+                <Navigate to={"/login"} />
+              )
             }
           />
           <Route
             path="/login"
             element={
-              <Suspense fallback={<MovieSkeleton />}>
-                <LoginComponent />
-              </Suspense>
+              !user ? (
+                <Suspense fallback={<Loading />}>
+                  <LoginComponent />
+                </Suspense>
+              ) : (
+                <Navigate to={"/"} />
+              )
             }
           />
           <Route
             path="/signup"
             element={
-              <Suspense fallback={<MovieSkeleton />}>
-                <SignupComponent />
-              </Suspense>
+              !user ? (
+                <Suspense fallback={<Loading />}>
+                  <SignupComponent />
+                </Suspense>
+              ) : (
+                <Navigate to={"/"} />
+              )
             }
           />
           <Route
-            path="/movie/:id"
+            path="/watch/:id"
             element={
-              <Suspense fallback={<MovieSkeleton />}>
-                <MovieComponent />
-              </Suspense>
+              user ? (
+                <Suspense fallback={<Loading />}>
+                  <MovieComponent />
+                </Suspense>
+              ) : (
+                <Navigate to={"/login"} />
+              )
             }
           />
           <Route
             path="/profile"
             element={
-              <Suspense fallback={<HomeSkeleton />}>
-                <ProfileComponent />
-              </Suspense>
+              user ? (
+                <Suspense fallback={<Loading />}>
+                  <ProfileComponent />
+                </Suspense>
+              ) : (
+                <Navigate to={"/login"} />
+              )
             }
           />
           <Route
             path="/search"
             element={
-              <Suspense fallback={<HomeSkeleton />}>
-                <GptSearchComponent />
-              </Suspense>
+              user ? (
+                <Suspense fallback={<Loading />}>
+                  <GptSearchComponent />
+                </Suspense>
+              ) : (
+                <Navigate to={"/login"} />
+              )
             }
           />
+          <Route path="/*" element={<NotFoundPage />} />
         </Routes>
       </Router>
       <Toaster />
-    </Provider>
+    </>
   );
 }
 

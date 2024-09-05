@@ -9,23 +9,38 @@ export const options = {
   },
 };
 
-const endpoints = {
+export const endpoints = {
   nowPlayingMovies: `${baseUrl}movie/now_playing?api_key=${key}`,
   popular: `${baseUrl}movie/popular?api_key=${key}`,
   topRatedMovies: `${baseUrl}movie/top_rated?api_key=${key}`,
   upcoming: `${baseUrl}movie/upcoming?api_key=${key}`,
+  trending: `${baseUrl}trending/movie/day?api_key=${key}`,
 };
 
-export const movieDetails = (movie_id) => {
-  return `${baseUrl}movie/${movie_id}?api_key=${key}`;
+export const tvEndpoints = {
+  airingToday: `${baseUrl}tv/airing_today?api_key=${key}`,
+  onTheAir: `${baseUrl}tv/on_the_air?api_key=${key}`,
+  popular: `${baseUrl}tv/popular?api_key=${key}`,
+  topRated: `${baseUrl}tv/top_rated?api_key=${key}`,
+  trending: `${baseUrl}trending/tv/day?api_key=${key}`,
 };
 
-export const movieImage = (movie_id) => {
-  return `${baseUrl}movie/${movie_id}/images`;
+export const movieDetails = (contentType, id) => {
+  return `${baseUrl}${contentType}/${id}?api_key=${key}`;
 };
 
-export const movieDetailsWithName = (movie) => {
-  return `${baseUrl}search/movie?query=${movie}&include_adult=false&language=en-US&page=1`;
+export const movieImage = (id) => {
+  return `${baseUrl}movie/${id}/images?api_key=${key}`;
 };
 
-export default endpoints;
+export const movieDetailsWithName = (contentType, movie) => {
+  return `${baseUrl}search/${contentType}?query=${movie}&include_adult=false&language=en-US&page=1`;
+};
+
+export const movieTrailers = (contentType, id) => {
+  return `${baseUrl}${contentType}/${id}/videos?api_key=${key}`;
+};
+
+export const similarContent = (contentType, id) => {
+  return `${baseUrl}${contentType}/${id}/similar?api_key=${key}`;
+};

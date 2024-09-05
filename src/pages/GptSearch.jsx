@@ -12,7 +12,7 @@ const GptSearch = () => {
             <div className="absolute w-full h-[350px] md:h-[450px] bg-black/70 bg-gradient-to-t from-black" />
             <img
               className="w-full h-full  object-cover object-top"
-              src="backgroundImage.jpg"
+              src="/hero.jpg"
               alt={"///"}
             />
             <div className="absolute w-full top-[5%] md:top-[10%] lg:top-[20%] mt-5 p-4 md:p-8 text-white ">

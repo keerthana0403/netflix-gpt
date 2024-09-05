@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { IoMdAdd } from "react-icons/io";
-import { TiTick } from "react-icons/ti";
+import { useParams } from "react-router-dom";
+
 import useMovieDetails from "../hooks/useMovieDetails";
 import { movieImage } from "../utils/constants";
 import MovieSkeleton from "../skeletons/Movie";
+import Header from "../components/Header";
+import {
+  ChevronLeft,
+  ChevronRight,
+  CheckCheck,
+  SquarePlus,
+} from "lucide-react";
+import ReactPlayer from "react-player";
 
 import { useDispatch, useSelector } from "react-redux";
 
 import {
   addMovieToWatchlist,
+  getWatchListMovies,
   removeMovieFromWatchlist,
 } from "../store/actions/watchListAction";
 
-import toast from "react-hot-toast";
+import { movieTrailers, similarContent } from "../services/movieServices";
+import MovieList from "../components/MovieList";
 
 const Movie = () => {
   const user = useSelector((store) => store.auth.user);
+  const contentType = useSelector((store) => store.contentType.contentType);
   const watchList = useSelector((store) => store.watchList.movies);
-  const navigate = useNavigate();
+
+  const [trailers, setTrailers] = useState([]);
+  const [similarContentList, setSimilarContentList] = useState([]);
+  const [currentTrailerIdx, setCurrentTrailerIdx] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -26,9 +39,18 @@ const Movie = () => {
 
   const { id } = useParams();
 
-  const movie = useMovieDetails(id);
+  const movie = useMovieDetails(contentType, id);
+
+  const trailer = movieTrailers(contentType, id);
+
+  const similar = similarContent(contentType, id);
 
   useEffect(() => {
+    dispatch(getWatchListMovies(user.uid));
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    setLike(false);
     watchList.forEach((ele) => {
       if (ele.id === Number(id)) {
         setLike(true);
@@ -37,19 +59,44 @@ const Movie = () => {
     });
   }, [watchList, id]);
 
-  if (!user) {
-    toast.error("Sign In to continue");
-    navigate("/");
-    return;
-  }
+  useEffect(() => {
+    const getTrailers = async () => {
+      try {
+        const data = await fetch(trailer);
+        const json = await data.json();
+        setTrailers(json.results);
+      } catch (error) {
+        if (error.message.includes("404")) {
+          setTrailers([]);
+        }
+      }
+    };
+    getTrailers();
+  }, [trailer]);
 
-  if (!movie || !watchList) return <MovieSkeleton />;
+  useEffect(() => {
+    const getSimilarContent = async () => {
+      try {
+        const data = await fetch(similar);
+        const json = await data.json();
+        setSimilarContentList(json.results);
+      } catch (error) {
+        if (error.message.includes("404")) {
+          setSimilarContentList([]);
+        }
+      }
+    };
+    getSimilarContent();
+  }, [similar]);
+
+  if (!movie || !watchList || !trailers || !similarContentList)
+    return <MovieSkeleton />;
 
   const markFavShow = () => {
     const userId = user?.uid;
     if (userId) {
       if (!like) {
-        dispatch(addMovieToWatchlist({ movie, userId }));
+        dispatch(addMovieToWatchlist({ movie, userId, contentType }));
       } else {
         dispatch(removeMovieFromWatchlist({ movie, userId }));
       }
@@ -57,70 +104,132 @@ const Movie = () => {
     }
   };
 
-  return (
-    <div className="w-full h-screen bg-black">
-      {console.log("Movie Lazy Load")}
-      <img
-        className="hidden sm:block absolute w-full h-screen object-cover"
-        src={movieImage(movie.backdrop_path ?? movie.poster_path, "original")}
-        alt="///"
-      />
-      <div className="fixed top-0 left-0 w-full h-screen md:bg-black/90 bg-black" />
-      <div className="absolute w-full h-screen flex items-center justify-center text-white p-5 select-none ">
-        <div className="w-full h-screen max-w-6xl mx-auto flex flex-col md:flex-row items-center pt-[20%] md:pt-0">
-          <div className=" w-full md:w-1/3">
-            <img
-              src={movieImage(
-                movie.poster_path ?? movie.backdrop_path,
-                "original"
-              )}
-              alt={movie.title}
-              className="rounded-lg w-full md:h-auto mx-auto"
-              style={{ maxHeight: "24rem", maxWidth: "20rem" }}
-            />
-          </div>
+  const handleNext = () => {
+    if (currentTrailerIdx < trailers.length - 1)
+      setCurrentTrailerIdx(currentTrailerIdx + 1);
+  };
+  const handlePrev = () => {
+    if (currentTrailerIdx > 0) setCurrentTrailerIdx(currentTrailerIdx - 1);
+  };
 
-          <div className="order-1 md:order-2 w-full  md:w-1/2 pt-4 md:pl-8">
-            <h2 className="text-lg mb-1 font-bold">
-              {movie.title || movie.name}
+  return (
+    <div className="bg-black min-h-screen text-white">
+      <div className="mx-auto container px-4 py-8 h-full">
+        <Header />
+
+        {trailers.length > 0 && (
+          <div className="flex justify-between items-center mb-4">
+            <button
+              className={`
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
+                currentTrailerIdx === 0 ? "opacity-50 cursor-not-allowed " : ""
+              }}
+							`}
+              disabled={currentTrailerIdx === 0}
+              onClick={handlePrev}
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            <button
+              className={`
+							bg-gray-500/70 hover:bg-gray-500 text-white py-2 px-4 rounded ${
+                currentTrailerIdx === trailers.length - 1
+                  ? "opacity-50 cursor-not-allowed "
+                  : ""
+              }}
+							`}
+              disabled={currentTrailerIdx === trailers.length - 1}
+              onClick={handleNext}
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        )}
+
+        <div className="aspect-video p-2 sm:px-10 md:px-32">
+          {trailers.length > 0 && (
+            <ReactPlayer
+              controls={true}
+              width={"100%"}
+              height={"70vh"}
+              className="mx-auto overflow-hidden rounded-lg"
+              url={`https://www.youtube.com/watch?v=${trailers[currentTrailerIdx].key}`}
+            />
+          )}
+
+          {trailers?.length === 0 && (
+            <h2 className="text-xl text-center mt-10 ">
+              No trailers available for{" "}
+              <span className="font-bold text-red-600">
+                {movie?.title || movie?.name}
+              </span>{" "}
+              😥
             </h2>
-            {movie.genres && (
-              <div className="flex">
-                {movie.genres.map((genre) => (
-                  <p key={genre.id} className=" text-slate-400 mr-2 mb-2">
-                    {genre.name}
-                  </p>
-                ))}
-              </div>
-            )}
-            <p className="text-lg mb-3">{movie.overview}</p>
-            <p className="mb-3 text-slate-400">
-              <span className="font-semibold  mr-1">Date Released:</span>
-              {movie.release_date || movie.first_air_date}
-            </p>
-            <div className="flex items-center">
-              {like ? (
-                <>
-                  <TiTick
-                    size={20}
-                    className="top-2 left-2 text-green-500 cursor-pointer"
-                    onClick={markFavShow}
-                  />
-                  <p>Added</p>
-                </>
+          )}
+        </div>
+
+        {/* movie details */}
+        <div
+          className="flex flex-col md:flex-row items-center justify-between gap-20 
+				max-w-6xl mx-auto"
+        >
+          <div className="mb-4 md:mb-0">
+            <h2 className="text-5xl font-bold text-balance">
+              {movie?.title || movie?.name}
+            </h2>
+
+            <div className="mt-2 text-lg flex flex-row">
+              {movie?.release_date || movie?.first_air_date} |{" "}
+              {movie?.adult ? (
+                <span className="text-red-600">18+</span>
               ) : (
-                <>
-                  <IoMdAdd
-                    size={20}
-                    className="top-2 left-2 text-gray-300 cursor-pointer"
-                    onClick={markFavShow}
-                  />
-                  <p>Watchlist</p>
-                </>
+                <span className="text-green-600">PG-13</span>
+              )}{" "}
+              |{"  "}
+              {like ? (
+                <span
+                  className="flex flex-row items-center ml-2 cursor-pointer"
+                  onClick={markFavShow}
+                >
+                  <CheckCheck size={20} color="#5dd52a" />
+                  <p className="ml-1">Added</p>
+                </span>
+              ) : (
+                <span
+                  className="flex flex-row items-center ml-2 cursor-pointer"
+                  onClick={markFavShow}
+                >
+                  <SquarePlus size={20} />
+                  <p className="ml-1">Watchlist</p>
+                </span>
               )}
             </div>
+            <p className="mt-4 text-lg">{movie?.overview}</p>
           </div>
+          {movie?.backdrop_path ? (
+            <img
+              className="max-h-[600px] rounded-md"
+              src={movieImage(movie?.backdrop_path, "w500")}
+              alt={movie?.title}
+            />
+          ) : (
+            <img
+              className="max-h-[300px] max-w-[600px] rounded-md"
+              src={movieImage(movie?.poster_path, "original")}
+              alt={movie?.title}
+            />
+          )}
         </div>
+
+        {similarContentList.length > 0 && (
+          <div className="mt-12 max-w-6xl mx-auto relative">
+            <MovieList
+              title={"Similar Movies/Tv Show"}
+              movies={similarContentList}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

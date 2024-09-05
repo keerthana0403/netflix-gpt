@@ -31,7 +31,7 @@ export const getWatchListMovies = createAsyncThunk(
 
 export const addMovieToWatchlist = createAsyncThunk(
   "addMovieToWatchlist",
-  async ({ movie, userId }) => {
+  async ({ movie, userId, contentType }) => {
     try {
       const userDoc = doc(db, "users", userId);
       // await updateDoc(userDoc, {
@@ -48,8 +48,13 @@ export const addMovieToWatchlist = createAsyncThunk(
           (item) => item.id === movie.id
         );
 
+        const watchlistItem = {
+          ...movie,
+          contentType: contentType,
+        };
+
         if (!isAlreadyInWatchlist) {
-          const newWatchlist = [...currentWatchlist, movie];
+          const newWatchlist = [...currentWatchlist, watchlistItem];
           transaction.update(userDoc, { favShows: newWatchlist });
         }
       });

@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 
 import { movieDetails } from "../services/movieServices";
 
-const useMovieDetails = (movie_id) => {
+const useMovieDetails = (contentType, movie_id) => {
   const [movie, setMovie] = useState(null);
 
-  const getMovie = async (movie_id) => {
-    const movieUrl = movieDetails(movie_id);
+  const getMovie = async (contentType, movie_id) => {
+    const movieUrl = movieDetails(contentType, movie_id);
     const data = await fetch(movieUrl);
     const json = await data.json();
     const movieData = json;
     setMovie(movieData);
   };
   useEffect(() => {
-    getMovie(movie_id);
-  }, []);
+    getMovie(contentType, movie_id);
+  }, [contentType, movie_id]);
 
   return movie;
 };

@@ -1,29 +1,26 @@
 import { movieImage } from "../utils/constants";
 
 const MovieCard = ({ movie }) => {
-  const { title, backdrop_path, poster_path } = movie;
+  const { title, backdrop_path } = movie;
 
   return (
-    <div className="relative w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block rounded-lg overflow-hidden  m-2 select-none">
-      {backdrop_path && (
+    <div className="rounded-lg overflow-hidden">
+      {backdrop_path ? (
         <img
-          className="w-full h-full block object-cover object-top"
+          className="transition-transform duration-300 ease-in-out group-hover:scale-125"
           src={movieImage(backdrop_path, "w500")}
           alt={title}
         />
-      )}
-
-      {!backdrop_path && (
+      ) : (
         <img
-          className="w-[200px] h-[90px] sm:h-[110px] md:h-[135px] md:w-[240px] lg:h-[150px] lg:w-[280px] block object-cover object-top"
-          src={movieImage(poster_path, "w500")}
+          className="transition-transform duration-300 ease-in-out group-hover:scale-125 w-[500px] h-[150px]"
+          src={movieImage(movie?.poster_path, "original")}
           alt={title}
         />
       )}
-
       <div className="absolute top-0 left-0 w-full h-full bg-black/80 opacity-0 hover:opacity-100">
         <p className="whitespace-normal text-xs md:text-sm flex justify-center items-center h-full font-sans font-bold">
-          {movie.title}
+          {title || movie.original_name}
         </p>
       </div>
     </div>

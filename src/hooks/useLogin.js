@@ -20,12 +20,11 @@ const useLogin = () => {
         email,
         password
       );
-      const { uid, email: userEmail, metadata } = userCredential.user;
+      const { uid, email: userEmail } = userCredential.user;
       dispatch(
         addUser({
           uid: uid,
           email: userEmail,
-          creationTime: metadata?.creationTime,
         })
       );
       navigate("/");
