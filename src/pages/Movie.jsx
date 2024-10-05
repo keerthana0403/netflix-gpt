@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import useMovieDetails from "../hooks/useMovieDetails";
 import { movieImage } from "../utils/constants";
 import MovieSkeleton from "../skeletons/Movie";
-import Header from "../components/Header";
 import {
   ChevronLeft,
   ChevronRight,
@@ -115,8 +114,6 @@ const Movie = () => {
   return (
     <div className="bg-black min-h-screen text-white">
       <div className="mx-auto container px-4 py-8 h-full">
-        <Header />
-
         {trailers.length > 0 && (
           <div className="flex justify-between items-center mb-4">
             <button

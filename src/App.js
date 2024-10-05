@@ -30,12 +30,11 @@ function App() {
   useEffect(() => {
     const authState = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const { uid, email, metadata } = user;
+        const { uid, email } = user;
         dispatch(
           addUser({
             uid: uid,
             email: email,
-            creationTime: metadata?.creationTime,
           })
         );
       } else {

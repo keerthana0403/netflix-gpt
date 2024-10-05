@@ -18,7 +18,6 @@ import {
 import HomeSkeleton from "../skeletons/Home";
 import Header from "../components/Header";
 import MainMovie from "../components/MainMovie";
-import { getWatchListMovies } from "../store/actions/watchListAction";
 import Loading from "../components/Loading";
 
 const MovieListComponent = lazy(() => import("../components/MovieList"));
@@ -29,7 +28,6 @@ const Home = () => {
   const movies = useSelector((store) => store.movies);
   const tvShows = useSelector((store) => store.tvshows);
   const user = useSelector((store) => store.user);
-  const watchList = useSelector((store) => store.watchList.movies);
 
   const {
     nowPlayingMovies,
@@ -48,22 +46,21 @@ const Home = () => {
   } = tvShows;
 
   useEffect(() => {
-    if (!nowPlayingMovies) dispatch(getNowPlayingMovies());
-    if (!popularMovies) dispatch(getPopularMovies());
-    if (!topRatedMovies) dispatch(getTopRatedMovies());
-    if (!upcoming) dispatch(getUpcomingMovies());
-    if (!trendingMovies) dispatch(getTrendingMovies());
+    if (contentType === "movie") {
+      if (!nowPlayingMovies) dispatch(getNowPlayingMovies());
+      if (!popularMovies) dispatch(getPopularMovies());
+      if (!topRatedMovies) dispatch(getTopRatedMovies());
+      if (!upcoming) dispatch(getUpcomingMovies());
+      if (!trendingMovies) dispatch(getTrendingMovies());
+    }
 
-    if (!airing_today) dispatch(getAiringToday());
-    if (!on_the_air) dispatch(getOnTheAir());
-    if (!popular) dispatch(getPopular());
-    if (!top_rated) dispatch(getTopRated());
-    if (!trendingShows) dispatch(getTrendingShows());
-
-    // if (!watchList) {
-    //   //console.log("Dispatching getWatchListMovies");
-    //   dispatch(getWatchListMovies(user?.uid));
-    // }
+    if (contentType === "tv") {
+      if (!airing_today) dispatch(getAiringToday());
+      if (!on_the_air) dispatch(getOnTheAir());
+      if (!popular) dispatch(getPopular());
+      if (!top_rated) dispatch(getTopRated());
+      if (!trendingShows) dispatch(getTrendingShows());
+    }
   }, [
     dispatch,
     contentType,
@@ -77,8 +74,6 @@ const Home = () => {
     popular,
     top_rated,
     trendingShows,
-    user,
-    watchList,
   ]);
 
   const movieLists = useMemo(
@@ -131,7 +126,7 @@ const Home = () => {
     return <HomeSkeleton />;
   }
 
-  if (user && !watchList) {
+  if (!user) {
     return <HomeSkeleton />;
   }
 
