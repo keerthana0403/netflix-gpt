@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import useMovieDetails from "../hooks/useMovieDetails";
 import { movieImage } from "../utils/constants";
@@ -9,6 +9,7 @@ import {
   ChevronRight,
   CheckCheck,
   SquarePlus,
+  ArrowLeft,
 } from "lucide-react";
 import ReactPlayer from "react-player";
 
@@ -33,6 +34,7 @@ const Movie = () => {
   const [currentTrailerIdx, setCurrentTrailerIdx] = useState(0);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [like, setLike] = useState(false);
 
@@ -113,6 +115,13 @@ const Movie = () => {
 
   return (
     <div className="bg-black min-h-screen text-white">
+      <button
+        className="mt-10 ml-5 p-2 bg-red-500 rounded"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft size={24} />
+      </button>
+
       <div className="mx-auto container px-4 py-8 h-full">
         {trailers.length > 0 && (
           <div className="flex justify-between items-center mb-4">

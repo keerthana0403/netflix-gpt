@@ -20,7 +20,7 @@ const LoginComponent = lazy(() => import("./pages/Login"));
 const SignupComponent = lazy(() => import("./pages/SignUp"));
 const HomeComponent = lazy(() => import("./pages/Home"));
 const MovieComponent = lazy(() => import("./pages/Movie"));
-const ProfileComponent = lazy(() => import("./pages/Profile"));
+const WatchlistComponent = lazy(() => import("./pages/Watchlist"));
 const GptSearchComponent = lazy(() => import("./pages/GptSearch"));
 
 function App() {
@@ -99,11 +99,11 @@ function App() {
             }
           />
           <Route
-            path="/profile"
+            path="/watchlist"
             element={
               user ? (
                 <Suspense fallback={<Loading />}>
-                  <ProfileComponent />
+                  <WatchlistComponent />
                 </Suspense>
               ) : (
                 <Navigate to={"/login"} />

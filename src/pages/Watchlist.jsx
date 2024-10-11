@@ -70,6 +70,16 @@ const Profile = () => {
               </div>
             ))}
         </div>
+        {!watchList.length && (
+          <div className="text-white text-center mt-[10%] md:mt-[5%]">
+            <h1 className="text-xl lg:text-3xl font-bold">
+              Your watchlist is empty!
+            </h1>
+            <p className="text-gray-300 lg:text-xl">
+              Start adding movies to keep track of what you want to watch.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

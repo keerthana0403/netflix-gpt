@@ -27,7 +27,6 @@ const Home = () => {
   const contentType = useSelector((store) => store.contentType.contentType);
   const movies = useSelector((store) => store.movies);
   const tvShows = useSelector((store) => store.tvshows);
-  const user = useSelector((store) => store.user);
 
   const {
     nowPlayingMovies,
@@ -123,10 +122,6 @@ const Home = () => {
     contentType === "tv" &&
     (!airing_today || !on_the_air || !popular || !top_rated || !trendingShows)
   ) {
-    return <HomeSkeleton />;
-  }
-
-  if (!user) {
     return <HomeSkeleton />;
   }
 

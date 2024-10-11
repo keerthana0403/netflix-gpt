@@ -57,7 +57,7 @@ const Header = () => {
           >
             Tv Shows
           </Link>
-          <Link to="/profile" className="hover:underline">
+          <Link to="/watchlist" className="hover:underline">
             Watchlist
           </Link>
         </div>
@@ -106,7 +106,7 @@ const Header = () => {
             Tv Shows
           </Link>
           <Link
-            to={"/profile"}
+            to={"/watchlist"}
             className="block hover:underline p-2"
             onClick={toggleMobileMenu}
           >

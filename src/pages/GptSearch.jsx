@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 import GptSearchBar from "../components/GptSearchBar";
 import GptMovieSuggestions from "../components/GptMovieSuggestions";
 
 const GptSearch = () => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="w-full h-screen select-none bg-black">
@@ -15,7 +18,13 @@ const GptSearch = () => {
               src="/hero.jpg"
               alt={"///"}
             />
-            <div className="absolute w-full top-[5%] md:top-[10%] lg:top-[20%] mt-5 p-4 md:p-8 text-white ">
+            <div className="absolute w-full top-[1%]  mt-5 p-4 md:p-8 text-white ">
+              <button
+                className="mt-5 ml-2 p-2 bg-red-500 rounded"
+                onClick={() => navigate(-1)}
+              >
+                <ArrowLeft size={24} />
+              </button>
               <GptSearchBar />
             </div>
           </div>
