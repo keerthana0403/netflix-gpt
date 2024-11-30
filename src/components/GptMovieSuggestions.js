@@ -1,15 +1,18 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MovieCard from "./MovieCard";
 import { Link } from "react-router-dom";
 
 import GptMovies from "../skeletons/GptMovies";
+import { setContentType } from "../store/reducers/contentType";
 
 const GptMovieSuggestions = () => {
   const truncate = (str, len) => {
     if (str.length < len) return str;
     return str.slice(0, len) + "...";
   };
+
+  const dispatch = useDispatch();
 
   const { movies, message, isLoading } = useSelector(
     (store) => store.gptSearch
@@ -30,6 +33,7 @@ const GptMovieSuggestions = () => {
                 key={movie.id}
                 to={"/watch/" + movie.id}
                 className="max-w-[250px] relative group"
+                onClick={() => dispatch(setContentType(movie.type))}
               >
                 <MovieCard key={movie.id} movie={movie} />
               </Link>

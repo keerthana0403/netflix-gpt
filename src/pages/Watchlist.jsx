@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { setContentType } from "../store/reducers/contentType";
 
-const Profile = () => {
+const Watchlist = () => {
   const dispatch = useDispatch();
   const watchList = useSelector((store) => store.watchList.movies);
   const userId = useSelector((store) => store.auth.user.uid);
@@ -85,4 +85,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Watchlist;

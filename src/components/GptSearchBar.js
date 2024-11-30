@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-import Loading from "./Loading";
+import { Loading } from "./Loading";
 import useGptSearch from "../hooks/useGptSearch";
 import toast from "react-hot-toast";
 

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { checkValidData } from "../utils/validate";
 
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 import useSignup from "../hooks/useSignup";
 
 const Signup = () => {

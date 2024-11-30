@@ -23,7 +23,7 @@ const useGptSearch = () => {
         {
           role: "user",
           content: `The user has entered: "${searchText}"
-                Please provide a list of movies/tv shows based on the input. The response should be in the following format: 
+                Please provide a list of movies/tv shows based on the details in the input. The response should be in the following format: 
                 [
                   { "type": "movie", "name": "Movie1" },
                   { "type": "tv", "name": "TV Show1" }

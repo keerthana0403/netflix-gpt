@@ -4,7 +4,7 @@ const MovieCard = ({ movie }) => {
   const { title, backdrop_path } = movie;
 
   return (
-    <div className="rounded-lg overflow-hidden">
+    <div className="rounded-lg overflow-hidden mx-1">
       {backdrop_path ? (
         <img
           className="transition-transform duration-300 ease-in-out group-hover:scale-125"

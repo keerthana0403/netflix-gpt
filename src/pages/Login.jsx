@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { checkValidData } from "../utils/validate";
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 import useLogin from "../hooks/useLogin";
 
 const Login = () => {

@@ -18,7 +18,7 @@ import {
 import HomeSkeleton from "../skeletons/Home";
 import Header from "../components/Header";
 import MainMovie from "../components/MainMovie";
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 
 const MovieListComponent = lazy(() => import("../components/MovieList"));
 

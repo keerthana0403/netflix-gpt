@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import MovieCard from "./MovieCard";
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FixedSizeList } from "react-window";
+
+import MovieCard from "./MovieCard";
 
 const MovieList = ({ title, movies }) => {
   const [showArrows, setShowArrows] = useState(false);
@@ -22,6 +24,20 @@ const MovieList = ({ title, movies }) => {
     });
   };
 
+  const MovieItem = ({ index, style }) => {
+    const movie = movies[index];
+    return (
+      <Link
+        key={movie.id}
+        to={"/watch/" + movie.id}
+        className="min-w-[250px] relative group"
+        style={style}
+      >
+        <MovieCard movie={movie} />
+      </Link>
+    );
+  };
+
   return (
     <div
       className="bg-black text-white  px-5 md:px-20 relative"
@@ -29,11 +45,19 @@ const MovieList = ({ title, movies }) => {
       onMouseLeave={() => setShowArrows(false)}
     >
       <h2 className="mb-4 text-2xl font-bold">{title}</h2>
-      <div
-        className="flex space-x-4 overflow-x-scroll scrollbar-hide"
-        ref={sliderRef}
-      >
-        {movies.map((movie) => (
+      <div className="flex space-x-4 overflow-x-scroll scrollbar-hide">
+        <FixedSizeList
+          height={150}
+          width={window.innerWidth}
+          itemSize={250}
+          itemCount={movies.length}
+          layout="horizontal"
+          outerRef={sliderRef}
+          className="scrollbar-hide"
+        >
+          {MovieItem}
+        </FixedSizeList>
+        {/* {movies.map((movie) => (
           <Link
             key={movie.id}
             to={"/watch/" + movie.id}
@@ -41,7 +65,7 @@ const MovieList = ({ title, movies }) => {
           >
             <MovieCard movie={movie} />
           </Link>
-        ))}
+        ))} */}
       </div>
 
       {showArrows && (

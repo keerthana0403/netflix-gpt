@@ -10,19 +10,19 @@ export const options = {
 };
 
 export const endpoints = {
-  nowPlayingMovies: `${baseUrl}movie/now_playing?api_key=${key}`,
-  popular: `${baseUrl}movie/popular?api_key=${key}`,
-  topRatedMovies: `${baseUrl}movie/top_rated?api_key=${key}`,
-  upcoming: `${baseUrl}movie/upcoming?api_key=${key}`,
-  trending: `${baseUrl}trending/movie/day?api_key=${key}`,
+  nowPlayingMovies: `${baseUrl}movie/now_playing?language=en-US&page=1`,
+  popular: `${baseUrl}movie/popular?language=en-US&page=1`,
+  topRatedMovies: `${baseUrl}movie/top_rated?language=en-US&page=1`,
+  upcoming: `${baseUrl}movie/upcoming?language=en-US&page=1`,
+  trending: `${baseUrl}trending/movie/day?language=en-US&page=1`,
 };
 
 export const tvEndpoints = {
-  airingToday: `${baseUrl}tv/airing_today?api_key=${key}`,
-  onTheAir: `${baseUrl}tv/on_the_air?api_key=${key}`,
-  popular: `${baseUrl}tv/popular?api_key=${key}`,
-  topRated: `${baseUrl}tv/top_rated?api_key=${key}`,
-  trending: `${baseUrl}trending/tv/day?api_key=${key}`,
+  airingToday: `${baseUrl}tv/airing_today?language=en-US&page=1`,
+  onTheAir: `${baseUrl}tv/on_the_air?language=en-US&page=1`,
+  popular: `${baseUrl}tv/popular?language=en-US&page=1`,
+  topRated: `${baseUrl}tv/top_rated?language=en-US&page=1`,
+  trending: `${baseUrl}trending/tv/day?language=en-US&page=1`,
 };
 
 export const movieDetails = (contentType, id) => {

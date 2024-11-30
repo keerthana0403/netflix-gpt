@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Info, Play } from "lucide-react";
 import { movieImage } from "../utils/constants";
-import Loading from "./Loading";
+import { Loading } from "./Loading";
 
 const MainMovie = ({ movie }) => {
   if (!movie) return <Loading />;

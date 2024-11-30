@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 
 import NotFoundPage from "./pages/404";
-import Loading from "./components/Loading";
+import { Loader } from "./components/Loading";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./services/firebase";
 import { addUser, removeUser } from "./store/reducers/userSlice";
@@ -54,7 +54,7 @@ function App() {
             path="/"
             element={
               user ? (
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loader />}>
                   <HomeComponent />
                 </Suspense>
               ) : (
@@ -66,7 +66,7 @@ function App() {
             path="/login"
             element={
               !user ? (
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loader />}>
                   <LoginComponent />
                 </Suspense>
               ) : (
@@ -78,7 +78,7 @@ function App() {
             path="/signup"
             element={
               !user ? (
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loader />}>
                   <SignupComponent />
                 </Suspense>
               ) : (
@@ -90,7 +90,7 @@ function App() {
             path="/watch/:id"
             element={
               user ? (
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loader />}>
                   <MovieComponent />
                 </Suspense>
               ) : (
@@ -102,7 +102,7 @@ function App() {
             path="/watchlist"
             element={
               user ? (
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loader />}>
                   <WatchlistComponent />
                 </Suspense>
               ) : (
@@ -114,7 +114,7 @@ function App() {
             path="/search"
             element={
               user ? (
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loader />}>
                   <GptSearchComponent />
                 </Suspense>
               ) : (

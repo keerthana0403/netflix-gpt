@@ -6,12 +6,11 @@ export const getGptResult = createAsyncThunk(
   async (movieList) => {
     try {
       const promiseArray = movieList.map(async (movie) => {
-        const data = await fetch(
-          movieDetailsWithName(movie?.type, movie?.name),
-          options
-        );
+        const movieUrl = movieDetailsWithName(movie?.type, movie?.name);
+        const data = await fetch(movieUrl, options);
         const json = await data.json();
-        return json.results[0];
+        const movieResult = { ...json.results[0], type: movie?.type };
+        return movieResult;
       });
       const tmdbResults = await Promise.all(promiseArray);
       console.log(tmdbResults);

@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { LogOut, Menu, Search } from "lucide-react";
 
 import { auth } from "../services/firebase";
-import Loading from "./Loading";
+import { Loading } from "./Loading";
 import { setContentType } from "../store/reducers/contentType";
 import { useDispatch } from "react-redux";
 
