@@ -11,6 +11,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isGuest, setIsGuest] = useState(false);
 
   const { login, loading } = useLogin();
 
@@ -23,6 +24,12 @@ const Login = () => {
     }
 
     login(email, password);
+  };
+
+  const handleGuestUser = () => {
+    setIsGuest(true);
+    setEmail(process.env.REACT_APP_GUEST_USER_EMAIL);
+    setPassword(process.env.REACT_APP_GUEST_USER_PASSWORD);
   };
   return (
     <div className="h-screen w-full bg-black">
@@ -90,6 +97,17 @@ const Login = () => {
               >
                 {loading ? <Loading /> : "Login"}
               </button>
+              {!isGuest && (
+                <button
+                  className="w-full py-2 bg-white text-red-700 font-semibold rounded-md
+							hover:bg-gray-100
+						"
+                  disabled={loading}
+                  onClick={handleGuestUser}
+                >
+                  Get Guest User Credentials
+                </button>
+              )}
             </form>
             <div className="text-center text-gray-400">
               Don't have an account?{" "}
