@@ -26,7 +26,7 @@ NetflixGPT is an AI-powered movie recommendation application that combines movie
 ### Clone the repository
 
 ```bash
-git clone https://github.com/keerthana0403/netflixgpt.git
+git clone https://github.com/keerthana0403/netflix-gpt.git
 ```
 
 ### Install dependencies
